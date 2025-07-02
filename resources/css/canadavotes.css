@@ -1,0 +1,57 @@
+#canadavotes_wrapper {
+    padding: 40px;
+    background: antiquewhite;
+}
+
+.row {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+.cv-btn {
+    max-width: 400px;
+    padding: 10px 100px;
+    margin: auto;
+    font-size: 20pt;
+}
+.cv-select {
+    margin: 20px 0;
+}
+.cvotespan {
+    color: darkred;
+    font-size: 38pt;
+}
+#cv_riding_data_table {
+    display: none;
+    font-size: 10pt;
+}
+#leaflet-wrapper {
+    margin: 40px;
+    display: none;
+}
+.leaflet-container {
+    height: 600px;
+    width: 1200px;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.info {
+    padding: 6px 8px;
+    font: 14px/16px Arial, Helvetica, sans-serif;
+    background: rgba(255,255,255,0.8);
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 5px;
+}
+.info h4 {
+    margin: 0 0 5px;
+    font: 20px Arial, Helvetica, sans-serif;
+    color: navy;
+}
+.info h5 {
+    margin: 0 0 5px;
+    font: 18px Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: steelblue;
+}
