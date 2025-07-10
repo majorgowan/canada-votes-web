@@ -152,6 +152,15 @@ document.addEventListener("DOMContentLoaded", function() {
                      data.centroid.longitude],
                     11);
 
+        // little function to display independent candidates party as "Independent"
+        function trimParty(party) {
+            if (party.startsWith("Independent")) {
+                return "Independent";
+            } else {
+                return party;
+            }
+        }
+
         // add custom control
         map.removeControl(info);
         info.onAdd = function (map) {
@@ -159,22 +168,17 @@ document.addEventListener("DOMContentLoaded", function() {
             this.update();
             return this._div;
         };
+
         // method that we will use to update the control based on feature properties passed
         function candidatesString(props) {
             var return_string = "";
             for (party in props) {
                 if (!(["PD_NUM", "DistrictName",
                        "TotalVotes"].includes(party))) {
-                    var party_str;
-                    if (party.startsWith("Independent")) {
-                        party_str = "Independent";
-                    } else {
-                        party_str = party;
-                    }
                     return_string = (
                         return_string
                         + candidatesMap[props.DistrictName][party]
-                        + ' (' + party_str + ')' + ': '
+                        + ' (' + trimParty(party) + ')' + ': '
                         + props[party].total + "<br>"
                     );
                 }
@@ -386,7 +390,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 tableDivString = (
                     tableDivString
                     + "<tr><td>" + tableDatum.candidate + "</td>"
-                    + "<td>" + tableDatum.party + "</td>"
+                    + "<td>" + trimParty(tableDatum.party) + "</td>"
                     + "<td>" + tableDatum.eday + "</td>"
                     + "<td>" + tableDatum.advance + "</td>"
                     + "<td>" + tableDatum.special + "</td>"

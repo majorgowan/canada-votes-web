@@ -151,6 +151,15 @@ document.addEventListener("DOMContentLoaded", function() {
                      data.centroid.longitude],
                     11);
 
+        // little function to display independent candidates party as "Independent"
+        function trimParty(party) {
+            if (party.startsWith("Independent")) {
+                return "Independent";
+            } else {
+                return party;
+            }
+        }
+
         // add custom control
         map.removeControl(info);
         info.onAdd = function (map) {
@@ -164,16 +173,10 @@ document.addEventListener("DOMContentLoaded", function() {
             for (party in props) {
                 if (!(["PD_NUM", "DistrictName", "Poll",
                        "TotalVotes"].includes(party))) {
-                    var party_str;
-                    if (party.startsWith("Independent")) {
-                        party_str = "Independent";
-                    } else {
-                        party_str = party;
-                    }
                     return_string = (
                         return_string
                         + candidatesMap[props.DistrictName][party]
-                        + ' (' + party_str + ')' + ': '
+                        + ' (' + trimParty(party) + ')' + ': '
                         + props[party].eday + "<br>"
                     );
                 }
@@ -384,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 tableDivString = (
                     tableDivString
                     + "<tr><td>" + tableDatum.candidate + "</td>"
-                    + "<td>" + tableDatum.party + "</td>"
+                    + "<td>" + trimParty(tableDatum.party) + "</td>"
                     + "<td>" + tableDatum.eday + "</td>"
                     + "<td>" + tableDatum.advance + "</td>"
                     + "<td>" + tableDatum.special + "</td>"
