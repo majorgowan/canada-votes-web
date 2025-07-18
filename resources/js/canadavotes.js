@@ -157,9 +157,6 @@ document.addEventListener("DOMContentLoaded", function() {
         map.eachLayer((layer) => {
             map.removeLayer(layer);
         });
-        map.setView([data.centroid.latitude,
-                     data.centroid.longitude],
-                    11);
 
         // little function to display independent candidates party as "Independent"
         function trimParty(party) {
@@ -294,21 +291,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         var pollLayerGroup = L.layerGroup(pollLayerGroupArray).addTo(map);
 
-        // add tooltips at riding centroids
-        /*
-        var riding_tooltips = {}
-        for (centroid of data.centroids.features) {
-         riding_tooltips[centroid.id] = L.tooltip(
-            L.latLng(centroid.geometry.coordinates[1],
-                     centroid.geometry.coordinates[0]),
-            {
-               "content": centroid.properties.DistrictName,
-               "permanent": false,
-               "opacity": 0.6
-            }
-         ).addTo(map);
+        // add labels at riding centroids
+        for (centroid of data.riding_centroids.features) {
+            new L.marker(
+                [centroid.geometry.coordinates[1],
+                 centroid.geometry.coordinates[0]],
+                {
+                    icon: new L.DivIcon({
+                        html: '<span>' + centroid.properties.DistrictName + '</span>',
+                        className: "cv-riding-label",
+                        iconSize: [120, 50],
+                        iconAnchor: [60, 0]
+                    }),
+                    zIndexOffset: 1000
+                }
+            ).addTo(map);
         }
-        */
 
         // add legend for colours
         map.removeControl(legend);
