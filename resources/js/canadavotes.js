@@ -21,8 +21,16 @@ document.addEventListener("DOMContentLoaded", function() {
     //       ]
     //   }
 
+    // is this the advance or election-day page?
+    const descriptionTag = (document
+                            .querySelector("meta[name='description']")
+                            .getAttribute("content"));
+    var advance = descriptionTag.includes("dvance");
+
     // instantiate map object and controls
-    var map = L.map('canadavotes_map');
+    var map = L.map("canadavotes_map",
+                    {fullscreenControl: true});
+    var map_element = document.getElementById("canadavotes_map");
     var info = L.control();
     var legend = L.control({position: 'bottomright'});
 
@@ -49,22 +57,18 @@ document.addEventListener("DOMContentLoaded", function() {
         var party1 = form.querySelector("#cv_party1_selector").value;
         var party2 = form.querySelector("#cv_party2_selector").value;
 
-        if (!["toronto", "ottawa",
-              "montreal", "calgary",
-              "vancouver"].includes(city1)) {
-            city1 = "toronto";
-        }
-        if (!["2008", "2011", "2015",
-              "2019", "2021"].includes(year1)) {
-            year1 = "2021";
-        }
-
         // load the data if city or year has changed
         if (city1 != city || year1 != year) {
             city = city1;
             year = year1;
+            var filenameBase;
+            if (advance) {
+                filenameBase = "leaflet_data_advance_";
+            } else {
+                filenameBase = "leaflet_data_eday_";
+            }
             Promise.all([
-                d3.json(dataurl + "leaflet_data_" + city
+                d3.json(dataurl + filenameBase + city
                         + "_" + year + ".json")
             ]).then(
                 function([new_leaflet_data]) {
@@ -94,10 +98,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
         function get_voteshare(feature, party) {
             if (party in feature.properties) {
-                return (
-                    feature.properties[party]["total"]
-                    / feature.properties["TotalVotes"]["total"]
-                );
+                var voteshare;
+                if (advance) {
+                    voteshare = (feature.properties[party]["total"]
+                                 / feature.properties["TotalVotes"]["total"]);
+                } else {
+                    voteshare = (feature.properties[party]["eday"]
+                                 / feature.properties["TotalVotes"]["eday"]);
+                }
+                return voteshare;
             } else {
                 return 0;
             }
@@ -142,7 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       
         // scroll the map into view
-        document.getElementById("canadavotes_map").scrollIntoView();
+        map_element.scrollIntoView();
 
         // clear everything from map
         map.eachLayer((layer) => {
@@ -173,13 +182,13 @@ document.addEventListener("DOMContentLoaded", function() {
         function candidatesString(props) {
             var return_string = "";
             for (party in props) {
-                if (!(["PD_NUM", "DistrictName",
+                if (!(["PD_NUM", "ADV_POLL_N", "DistrictName", "Poll",
                        "TotalVotes"].includes(party))) {
                     return_string = (
                         return_string
                         + candidatesMap[props.DistrictName][party]
                         + ' (' + trimParty(party) + ')' + ': '
-                        + props[party].total + "<br>"
+                        + props[party].eday + "<br>"
                     );
                 }
            }
@@ -189,9 +198,9 @@ document.addEventListener("DOMContentLoaded", function() {
             this._div.innerHTML = (
                 '<h4>Election ' + year + '</h4>'
                 + (props ? ('<h5>' + props.DistrictName + ' poll '
-                            + props.PD_NUM + '</h5>'
+                            + props.Poll + '</h5>'
                             + candidatesString(props))
-                   : 'Hover over a poll area!')
+                   : 'Hover over a poll division!')
             );
         };
         info.addTo(map);
@@ -206,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function() {
         function ridingstyle(feature) {
             return {
                 fillOpacity: 0,
-                weight: 2,
+                weight: 3,
                 opacity: 0.8,
                 color: 'black'
             };
@@ -351,12 +360,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     "total": 0
                 }
                 for (feature of data.polldata[fednum].votes.features) {
-                    riding_vote_sums.eday += feature.properties[party].eday;
-                    riding_vote_sums.advance += feature.properties[party].advance;
-                    riding_vote_sums.total += feature.properties[party].total;
+                    if (advance) {
+                        riding_vote_sums.eday += feature.properties[party].eday;
+                        riding_vote_sums.advance += feature.properties[party].advance;
+                        riding_vote_sums.total += feature.properties[party].total;
+                    } else {
+                        riding_vote_sums.eday += feature.properties[party].eday;
+                        riding_vote_sums.total += feature.properties[party].eday;
+                    }
                 }
                 riding_vote_sums.special = data.polldata[fednum].special_votes[party];
-                riding_vote_sums.total += riding_vote_sums.special;
+                if (advance) {
+                    riding_vote_sums.total += riding_vote_sums.special;
+                } else {
+                    // if eday file, just get advance-vote total for riding
+                    riding_vote_sums.advance = data.polldata[fednum].advance_votes[party];
+                    riding_vote_sums.total += riding_vote_sums.special + riding_vote_sums.advance;
+                }
                 table_data[fednum].push(riding_vote_sums);
             }
             // sort riding_vote_sums by total votes
@@ -367,13 +387,13 @@ document.addEventListener("DOMContentLoaded", function() {
             // add to table
             tableDivString = (tableDivString
                 + "<div class='col-8'>"
-                + "<h5>"
+                + "<h4 class='cv-riding-name'>"
                 + (data.polldata[fednum]
                    .votes
                    .features[0]
                    .properties
                    .DistrictName)
-                + "</h5>"
+                + "</h4>"
                 + "<table class='table table-primary table-striped'>"
                 + "<thead>"
                 + "<tr><th>Candidate</th>"
@@ -410,6 +430,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // unhide table
         tableDiv.style.display = "block";
+
+        // add listeners to riding titles to focus map on riding on click
+        var ridingNames = document.getElementsByClassName("cv-riding-name");
+        for (ridingName of ridingNames) {
+            const ridingNameText = ridingName.innerHTML;
+            ridingName.onclick = function() {
+                for (layer of ridingsLayer.getLayers()) {
+                    if (layer.feature.properties.DistrictName == ridingNameText) {
+                        map_element.scrollIntoView();
+                        map.fitBounds(layer.getBounds());
+                    }
+                }
+            }
+        }
+
 
    }
 

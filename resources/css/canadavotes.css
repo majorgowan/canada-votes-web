@@ -11,6 +11,10 @@
 .cv_column {
     margin-bottom: 30px;
 }
+.cv-riding-name:hover {
+    color: darkred;
+    cursor: pointer;
+}
 .cv_btn {
     max-width: 80%;
     padding: 10px 10px;
