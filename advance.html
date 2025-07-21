@@ -183,12 +183,34 @@
 
         </form>
 
-        <div id="leaflet-wrapper">
-            <div class="container" id="canadavotes_map"></div>
-        </div>
+        <!-- placeholder for Leaflet map and data -->
+        <div class="row" id="cv_map_holder">
+            <div class="row cv-instructions">
+                <p>
+                    <BR>
+                    Vote results mapped by advance polling division
+                    including both advance votes and election-day
+                    votes.
+                </p>
+                <p>
+                    Mouse over a polling division to see vote results
+                    by candidate and party. Click to zoom in to polling division.
+                </p>
+                <p>
+                    Riding-level results shown in tables below map.  Click on
+                    riding name in table to pan and zoom map to that riding.
+                </p>
+            </div>
 
-        <div class="row">
-            <div id="cv_riding_data_table">
+            <!-- placeholder for leaflet map -->
+            <div id="leaflet-wrapper">
+                <div class="container" id="canadavotes_map"></div>
+            </div>
+
+            <!-- placeholder for riding data tables -->
+            <div class="row">
+                <div id="cv_riding_data_table">
+                </div>
             </div>
         </div>
 

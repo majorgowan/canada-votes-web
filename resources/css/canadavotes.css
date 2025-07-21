@@ -35,11 +35,14 @@
     font-size: 32pt;
 }
 #cv_riding_data_table {
-    display: none;
     font-size: 10pt;
 }
-#leaflet-wrapper {
+#cv_map_holder {
     display: none;
+}
+#cv_map_holder p {
+    font: 16pt Arial, Helvetica, sans-serif;
+    color: darkred;
 }
 .leaflet-container {
     height: 600px;

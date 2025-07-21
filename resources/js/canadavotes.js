@@ -45,8 +45,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // when refresh button clicked
     const cvRefreshButton = cvForm.querySelector("#cv_refresh_button");
     cvRefreshButton.addEventListener("click", function() {
-        // make map div visible
-        document.getElementById("leaflet-wrapper").style.display = "block";
+        // unhide map and data
+        const mapHolder = document.getElementById("cv_map_holder")
+        mapHolder.style.display = "block";
+        // scroll map and data into view
+        mapHolder.scrollIntoView();
         refresh_form(cvForm);
     });
 
@@ -151,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
       
         // scroll the map into view
-        map_element.scrollIntoView();
+        // map_element.scrollIntoView();
 
         // clear everything from map
         map.eachLayer((layer) => {
@@ -425,9 +428,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         tableDiv.innerHTML = tableDivString;
-
-        // unhide table
-        tableDiv.style.display = "block";
 
         // add listeners to riding titles to focus map on riding on click
         var ridingNames = document.getElementsByClassName("cv-riding-name");
