@@ -223,7 +223,7 @@ document.addEventListener("DOMContentLoaded", function() {
            }
            return return_string;
         }
-        info.update = function (props) {
+        info.update = function(props) {
             var pollString;
             if (ontario && props) {
                 pollString = "<h5>" + props.DistrictName + ' poll ' + props.PollNumber + "</h5>";
