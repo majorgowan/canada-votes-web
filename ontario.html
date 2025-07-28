@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport"
+    <meta name="viewport" 
           content="width=device-width, initial-scale=1">
     <meta name="author" content="Mark Fruman">
-    <meta name="description" content="advance results viewer">
+    <meta name="description" content="ontario provincial results viewer">
 
-    <title>Canada Votes!</title>
+    <title>Ontario Votes!</title>
 
     <!-- favicon -->
     <link rel="icon" type="image/png" href="/resources/images/250px-Maple_Leaf.svg.png"/>
@@ -35,65 +35,45 @@
     <script type="text/javascript" src="resources/js/canadavotes.js"></script>
 
 </head>
-<body class="bg-warning-subtle">
+<body class="bg-danger-subtle">
     <div class="container-fluid" id="canadavotes_wrapper">
 
         <h1>
-            <span class="cvotespan">Canada Votes!</span><BR>
+            <span class="cvotespan">Ontario Votes!</span><BR>
         </h1>
 
         <div class="row">
             <a href="index.html"><- Back to main menu</a>
         </div>
 
-        <h3>
-            <span>Votes by Advance Polling Division</span><BR>
-        </h3>
-
         <form id="cv_control_panel_form">
 
             <div class="row align-items-start justify-content-start">
 
-                <div class="col-md-2 col-sm-8 cv_column">
-                    <h5>Metro Area</h5>
+                <div class="col-md-3 col-sm-8 cv_column">
+                    <h5>Area</h5>
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
-                            name="metro-area-radio" id="metro-area-toronto"
-                            value="toronto" checked="">
-                        <label class="form-check-label" for="metro-area-toronto">
-                            Toronto
+                               name="metro-area-radio" id="metro-area-north-toronto"
+                               value="north_toronto" checked="">
+                        <label class="form-check-label" for="metro-area-north-toronto">
+                            North Toronto
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
-                            name="metro-area-radio" id="metro-area-montreal"
-                            value="montreal">
-                        <label class="form-check-label" for="metro-area-montreal">
-                            Montreal
+                               name="metro-area-radio" id="metro-area-downtown-toronto"
+                               value="downtown_toronto">
+                        <label class="form-check-label" for="metro-area-downtown-toronto">
+                            Downtown Toronto
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
-                            name="metro-area-radio" id="metro-area-ottawa"
-                            value="ottawa">
-                        <label class="form-check-label" for="metro-area-ottawa">
-                            Ottawa
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            name="metro-area-radio" id="metro-area-calgary"
-                            value="calgary">
-                        <label class="form-check-label" for="metro-area-calgary">
-                            Calgary
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio"
-                            name="metro-area-radio" id="metro-area-vancouver"
-                            value="vancouver">
-                        <label class="form-check-label" for="metro-area-vancouver">
-                            Vancouver
+                               name="metro-area-radio" id="metro-area-south-ottawa"
+                               value="south_ottawa">
+                        <label class="form-check-label" for="metro-area-south-ottawa">
+                            South Ottawa
                         </label>
                     </div>
                 </div>
@@ -102,42 +82,18 @@
                     <h5>Election</h5>
                     <div class="form-check">
                         <input class="form-check-input" type="radio"
-                            name="election-year-radio" id="election-year-2021"
-                            value="2021" checked="">
-                        <label class="form-check-label" for="election-year-2021">
-                            2021
+                            name="election-year-radio" id="election-year-2022"
+                            value="2022" checked="">
+                        <label class="form-check-label" for="election-year-2022">
+                            2022
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" 
-                            name="election-year-radio" id="election-year-2019"
-                            value="2019">
-                        <label class="form-check-label" for="election-year-2019">
-                            2019
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" 
-                            name="election-year-radio" id="election-year-2015"
-                            value="2015">
-                        <label class="form-check-label" for="election-year-2015">
-                            2015
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" 
-                            name="election-year-radio" id="election-year-2011"
-                            value="2011">
-                        <label class="form-check-label" for="election-year-2011">
-                            2011
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" 
-                            name="election-year-radio" id="election-year-2008"
-                            value="2008">
-                        <label class="form-check-label" for="election-year-2008">
-                            2008
+                            name="election-year-radio" id="election-year-2018"
+                            value="2018">
+                        <label class="form-check-label" for="election-year-2018">
+                            2018
                         </label>
                     </div>
                 </div>
@@ -150,24 +106,20 @@
                             aria-label="Party 1 selector"
                             id="cv_party1_selector">
                         <option selected 
-                                value="Liberal">Liberal</option>    
-                        <option value="Conservative">Conservative</option>
-                        <option value="NDP-New Democratic Party">NDP</option>
-                        <option value="Bloc Québécois">Bloc Québécois</option>
-                        <option value="People's Party - PPC">People's Party</option>
-                        <option value="Green Party">Green Party</option>
+                                value="Progressive Conservative Party of Ontario">Progressive Conservative</option>
+                        <option value="Ontario Liberal Party">Liberal</option>
+                        <option value="New Democratic Party of Ontario">NDP</option>
+                        <option value="Green Party of Ontario">Green Party</option>
                     </select>
                     
                     <select class="form-select"
                             aria-label="Party 2 selector"
                             id="cv_party2_selector">
                         <option selected 
-                                value="Conservative">Conservative</option>    
-                        <option value="Liberal">Liberal</option>
-                        <option value="NDP-New Democratic Party">NDP</option>
-                        <option value="Bloc Québécois">Bloc Québécois</option>
-                        <option value="People's Party - PPC">People's Party</option>
-                        <option value="Green Party">Green Party</option>
+                                value="Ontario Liberal Party">Liberal</option>
+                        <option value="Progressive Conservative Party of Ontario">Progressive Conservative</option>
+                        <option value="New Democratic Party of Ontario">NDP</option>
+                        <option value="Green Party of Ontario">Green Party</option>
                     </select>
                 </div>
 
@@ -188,9 +140,8 @@
             <div class="row cv-instructions">
                 <p>
                     <BR>
-                    Vote results are mapped by advance polling division,
-                    including both advance votes and election-day
-                    votes.
+                    Vote results are mapped by election-day polling division
+                    (does not include advance votes).
                 </p>
                 <p>
                     Mouse over a polling division to see vote results
@@ -203,8 +154,8 @@
                     </b>
                 </p>
                 <p>
-                    Riding-level results are shown in tables below the map.  Click on
-                    the riding name in the table to pan and zoom the map to that riding.
+                    Riding-level results are shown in tables below map.  Click on
+                    the riding name to pan and zoom the map to that riding.
                 </p>
             </div>
 
