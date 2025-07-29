@@ -230,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
             } else if (props) {
                 pollString = "<h5>" + props.DistrictName + ' poll' + props.Poll + "</h5>";
             }
-            var tabString = "<span class='cv-instruction'><BR>press TAB to cycle through polls</span>";
+            var tabString = "<span class='cv-instruction'><BR>press TAB to cycle through poll divisions</span>";
             this._div.innerHTML = (
                 '<h4>Election ' + year + '</h4>'
                 + (props ? (pollString + candidatesString(props) + tabString)
@@ -378,11 +378,19 @@ document.addEventListener("DOMContentLoaded", function() {
                     // unhighlight currently selected poll
                     pollLayers[mouseInRiding].resetStyle(selectedLayer);
 
-                    if (selectedPoll[mouseInRiding]["selected"]
-                        == selectedPoll[mouseInRiding]["length"] - 1) {
-                        selectedPoll[mouseInRiding]["selected"] = 0;
+                    if (e.shiftKey) {
+                        if (selectedPoll[mouseInRiding]["selected"] == 0) {
+                            selectedPoll[mouseInRiding]["selected"] = selectedPoll[mouseInRiding]["length"] - 1;
+                        } else {
+                            selectedPoll[mouseInRiding]["selected"]--;
+                        }
                     } else {
-                        selectedPoll[mouseInRiding]["selected"]++;
+                        if (selectedPoll[mouseInRiding]["selected"]
+                            == selectedPoll[mouseInRiding]["length"] - 1) {
+                            selectedPoll[mouseInRiding]["selected"] = 0;
+                        } else {
+                            selectedPoll[mouseInRiding]["selected"]++;
+                        }
                     }
                     var selectedLayer = (pollLayers[mouseInRiding]
                                          .getLayers()[selectedPoll[mouseInRiding]["selected"]]);
