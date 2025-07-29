@@ -264,6 +264,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // add poll data
         // style functions
         var cscale;
+        var party_diff_max_max;
         if (oneparty) {
             cscale = (d3.scaleLinear()
                         .domain([0, party_max[0]])
@@ -272,9 +273,10 @@ document.addEventListener("DOMContentLoaded", function() {
                             colourmap[parties[0]]
                          ]));
         } else {
+            party_diff_max_max = Math.max(...party_diff_max)
             cscale = (d3.scaleLinear()
-                        .domain([-1.0 * party_diff_max[1],
-                                 0, party_diff_max[0]])
+                        .domain([-1.0 * party_diff_max_max,
+                                 0, party_diff_max_max])
                         .range([
                             colourmap[parties[1]],
                             "white",
@@ -445,21 +447,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 ];
             } else {
                 legendGrades = [
-                    party_diff_max[0],
-                    0.75 * party_diff_max[0],
-                    0.50 * party_diff_max[0],
-                    0.25 * party_diff_max[0],
+                    party_diff_max_max,
+                    0.75 * party_diff_max_max,
+                    0.50 * party_diff_max_max,
+                    0.25 * party_diff_max_max,
                     0,
-                    -0.25 * party_diff_max[1],
-                    -0.50 * party_diff_max[1],
-                    -0.75 * party_diff_max[1],
-                    -1.00 * party_diff_max[1]
+                    -0.25 * party_diff_max_max,
+                    -0.50 * party_diff_max_max,
+                    -0.75 * party_diff_max_max,
+                    -1.00 * party_diff_max_max
                 ];
                 legendLabels = [
-                    party0String + " +" + (100 * party_diff_max[0]).toFixed(0) + "%",
+                    party0String + " +" + (100 * party_diff_max_max).toFixed(0) + "%",
                     '', '', '',
                     'Equal', '', '', '',
-                    party1String + " +" + (100 * party_diff_max[1]).toFixed(0) + "%"
+                    party1String + " +" + (100 * party_diff_max_max).toFixed(0) + "%"
                 ];
             }
             var div = L.DomUtil.create('div', 'info legend');
