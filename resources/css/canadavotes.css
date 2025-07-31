@@ -77,3 +77,19 @@
     font-weight: bold;
     color: steelblue;
 }
+.cv_stepper {
+    background: rgba(255,255,255,0.8);
+}
+.cv_stepper button {
+    background: #fff;
+    border: 1px;
+    border-style: solid;
+    border-radus: 2px;
+    border-color: #ccc;
+    color: rgba(15, 15, 15, 1.0);
+    font: 26px lucida Console, Monaco, monospace;
+    font-weight: bold;
+}
+.cv_stepper button:hover {
+    background: #f4f4f4;
+}

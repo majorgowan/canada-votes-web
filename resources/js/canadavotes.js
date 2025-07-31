@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     {fullscreenControl: true});
     var mapElement = document.getElementById("canadavotes_map");
     var info = L.control();
-    var legend = L.control({position: 'bottomright'});
+    var legend = L.control({"position": "bottomright"});
+    var stepper = L.control({"position": "bottomleft"});
 
     // declare variables before refresh function to avoid
     // unnecessary fetching of data when it hasn't changed
@@ -188,6 +189,8 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
+        // CONTROLS
+        //
         // add custom control
         map.removeControl(info);
         info.onAdd = function (map) {
@@ -195,7 +198,6 @@ document.addEventListener("DOMContentLoaded", function() {
             this.update();
             return this._div;
         };
-
         // method that we will use to update the control based on feature properties passed
         function candidatesString(props) {
             var return_string = "";
@@ -234,10 +236,25 @@ document.addEventListener("DOMContentLoaded", function() {
             this._div.innerHTML = (
                 '<h4>Election ' + year + '</h4>'
                 + (props ? (pollString + candidatesString(props) + tabString)
-                   : 'Hover over a poll division!')
+                   : "<span class='cv-instruction'>Hover over a poll division!</span>")
             );
         };
         info.addTo(map);
+
+        // add stepper (like Tab key)
+        map.removeControl(stepper);
+        stepper.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'cv_stepper'); // create a div with a class "cv_stepper"
+            this.update();
+            return this._div;
+        };
+        stepper.update = function() {
+            this._div.innerHTML = (
+                "<button id='cv_left_tab'>&#x2039;</button>"
+                 + "<button id='cv_right_tab'>&#x203A;</button>"
+            );
+        }
+        stepper.addTo(map);
 
         // background streetmap layer
         const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -306,6 +323,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var pollLayers = {};
         var pollLayerGroupArray = [];
         var mouseInRiding = null;
+        var lastMouseInRiding = Object.keys(data.polldata)[0];
         function highlightPoll(layer) {
             layer.setStyle({
                 weight: 1.5,
@@ -330,6 +348,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var layer = e.target;
                 highlightPoll(layer);
                 mouseInRiding = layer.ridingNumber;
+                lastMouseInRiding = layer.ridingNumber;
                 selectedPoll[mouseInRiding]["selected"] = layer.myId;
             }
             function resetHighlight(e) {
@@ -366,42 +385,71 @@ document.addEventListener("DOMContentLoaded", function() {
         var pollLayerGroup = L.layerGroup(pollLayerGroupArray).addTo(map);
 
         // have Tab cycle through polls in current riding
+        function tabThrough(pollNumber, direction, andZoom=false) {
+            // shift highlight to next layer in the active riding
+            // keep track of the "selected" poll (not necessarily where mouse is)
+            // and step through with tab until end and then restart at beginning
+
+            // if mouse not over riding, use last riding visited
+            if (pollNumber == null) {
+                pollNumber = lastMouseInRiding;
+            }
+            // unhighlight selected poll
+            resetAllPolls();
+
+            if (direction == "down") {
+                if (selectedPoll[pollNumber]["selected"] == 0) {
+                    selectedPoll[pollNumber]["selected"] = selectedPoll[pollNumber]["length"] - 1;
+                } else {
+                    selectedPoll[pollNumber]["selected"]--;
+                }
+            } else {
+                if (selectedPoll[pollNumber]["selected"]
+                    == selectedPoll[pollNumber]["length"] - 1) {
+                    selectedPoll[pollNumber]["selected"] = 0;
+                } else {
+                    selectedPoll[pollNumber]["selected"]++;
+                }
+            }
+            // highlight the new selected layer and update info
+            var selectedLayer = (pollLayers[pollNumber]
+                                 .getLayers()[selectedPoll[pollNumber]["selected"]]);
+            highlightPoll(selectedLayer);
+            info.update(selectedLayer.feature.properties);
+
+            if (andZoom) {
+                map.fitBounds(selectedLayer.getBounds());
+            }
+        }
         window.addEventListener('keydown', function(e) {
             if (e.key === "Tab") {
                 // disable usual Tab feature even if not over map
                 e.preventDefault();
                 if (mouseInRiding in pollLayers) {
-                    // shift highlight to next layer in the active riding
-                    // keep track of the "selected" poll (not necessarily where mouse is)
-                    // and step through with tab until end and then restart at beginning
-
-                    // unhighlight currently selected poll
-                    pollLayers[mouseInRiding].resetStyle(selectedLayer);
-
                     if (e.shiftKey) {
-                        if (selectedPoll[mouseInRiding]["selected"] == 0) {
-                            selectedPoll[mouseInRiding]["selected"] = selectedPoll[mouseInRiding]["length"] - 1;
-                        } else {
-                            selectedPoll[mouseInRiding]["selected"]--;
-                        }
+                        tabThrough(mouseInRiding, "down");
                     } else {
-                        if (selectedPoll[mouseInRiding]["selected"]
-                            == selectedPoll[mouseInRiding]["length"] - 1) {
-                            selectedPoll[mouseInRiding]["selected"] = 0;
-                        } else {
-                            selectedPoll[mouseInRiding]["selected"]++;
-                        }
+                        tabThrough(mouseInRiding, "up");
                     }
-                    var selectedLayer = (pollLayers[mouseInRiding]
-                                         .getLayers()[selectedPoll[mouseInRiding]["selected"]]);
-
-                    // highlight the new selected layer and update info
-                    highlightPoll(selectedLayer);
-                    info.update(selectedLayer.feature.properties);
                 }
             }
         });
-
+        const leftStepperButton = document.getElementById("cv_left_tab");
+        const rightStepperButton = document.getElementById("cv_right_tab");
+        leftStepperButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            tabThrough(null, direction="down", andZoom=true);
+        });
+        leftStepperButton.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+        });
+        rightStepperButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            tabThrough(null, direction="up", andZoom=true);
+        });
+        rightStepperButton.addEventListener('dblclick', function(e) {
+            e.stopPropagation();
+        });
 
         // add labels at riding centroids
         for (centroid of data.riding_centroids.features) {
@@ -494,7 +542,10 @@ document.addEventListener("DOMContentLoaded", function() {
         var selectedPoll = {};
         for (fednum in data.polldata) {
             table_data[fednum] = [];
-            selectedPoll[fednum] = {"length": data.polldata[fednum].votes.features.length}
+            selectedPoll[fednum] = {
+                "selected": data.polldata[fednum].votes.features.length - 1,
+                "length": data.polldata[fednum].votes.features.length
+            }
             for (party in data.polldata[fednum].candidates) {
                 var riding_vote_sums = {
                     "candidate": data.polldata[fednum].candidates[party],
