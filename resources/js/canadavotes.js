@@ -188,6 +188,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 return party;
             }
         }
+        // little function to get party with most votes
+        function maxParty(props, scorecol="total") {
+            var leader;
+            var maxScore = 0;
+            for (party in props) {
+                if (!(["PD_NUM", "ADV_POLL_N", "DistrictName", "Poll",
+                       "PollNumber", "DistrictNumber",
+                       "TotalVotes"].includes(party))) {
+                    if (props[party][scorecol] > maxScore) {
+                        leader = party;
+                        maxScore = props[party][scorecol];
+                    }
+                }
+            }
+            return leader;
+        }
 
         // CONTROLS
         //
@@ -201,25 +217,48 @@ document.addEventListener("DOMContentLoaded", function() {
         // method that we will use to update the control based on feature properties passed
         function candidatesString(props) {
             var return_string = "";
+            var leader;
+            if (advance) {
+                leader = maxParty(props, "total");
+            } else {
+                leader = maxParty(props, "eday");
+            }
             for (party in props) {
                 if (!(["PD_NUM", "ADV_POLL_N", "DistrictName", "Poll",
                        "PollNumber", "DistrictNumber",
                        "TotalVotes"].includes(party))) {
                     var partyString;
+                    var percentOfTotal;
                     if (advance) {
+                        percentOfTotal = 100 * props[party].total / props["TotalVotes"].total;
                         partyString = ("<span class='cv-votecount'>"
                                        + props[party].eday + "</span> (eday), "
                                        + "<span class='cv-votecount'>"
-                                       + props[party].advance + "</span> (adv)");
+                                       + props[party].advance + "</span> (adv)"
+                                       + "&emsp;"
+                                       + "<span class='cv-votepercent'>"
+                                       + percentOfTotal.toFixed(0) + "%"
+                                       + "</span>");
                     } else {
+                        percentOfTotal = 100 * props[party].eday / props["TotalVotes"].eday;
                         partyString = ("<span class='cv-votecount'>"
-                                       + props[party].eday + "</span>");
+                                       + props[party].eday + "</span>"
+                                       + "&emsp;"
+                                       + "<span class='cv-votepercent'>"
+                                       + percentOfTotal.toFixed(0) + "%"
+                                       + "</span>");
+                    }
+                    partyString = (
+                        candidatesMap[props.DistrictName][party]
+                        + ' (' + trimParty(party) + ')' + ': '
+                        + partyString
+                    );
+                    // make leader bold
+                    if (party === leader) {
+                        partyString = "<b>" + partyString + "</b>";
                     }
                     return_string = (
-                        return_string
-                        + candidatesMap[props.DistrictName][party]
-                        + ' (' + trimParty(party) + ')' + ': '
-                        + partyString + "<br>"
+                        return_string + partyString + "<br>"
                     );
                 }
            }

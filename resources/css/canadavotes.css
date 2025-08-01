@@ -36,7 +36,9 @@
 }
 .cv-votecount {
     color: darkred;
-    font-weight: bold;
+}
+.cv-votepercent {
+    color: navy;
 }
 .cv-instruction {
     color: navy;
