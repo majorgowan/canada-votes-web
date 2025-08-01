@@ -44,6 +44,14 @@
     color: navy;
     font-style: italic;
 }
+#cv_party2_selector:has(>option[value="oneparty"]:checked) {
+    color: rgba(55,55,55,0.8);
+    background-color: lightgray;
+}
+#cv_party2_selector option {
+    color: #000;
+    background-color: #fff;
+}
 #cv_riding_data_table {
     font-size: 10pt;
 }

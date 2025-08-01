@@ -135,7 +135,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        var oneparty = (parties[0] == parties[1]);
+        var oneparty = (parties[0] == parties[1]) || (parties[1] === "oneparty");
+
+        if (oneparty) {
+            parties[1] = parties[0];
+        }
 
         // compute maximum fraction for each party
         var party_max = [0.0, 0.0];
@@ -267,9 +271,9 @@ document.addEventListener("DOMContentLoaded", function() {
         info.update = function(props) {
             var pollString;
             if (ontario && props) {
-                pollString = "<h5>" + props.DistrictName + ' poll ' + props.PollNumber + "</h5>";
+                pollString = "<h5>" + props.DistrictName + ' poll ' + props.PollNumber.trimStart() + "</h5>";
             } else if (props) {
-                pollString = "<h5>" + props.DistrictName + ' poll' + props.Poll + "</h5>";
+                pollString = "<h5>" + props.DistrictName + ' poll ' + props.Poll.trimStart() + "</h5>";
             }
             var tabString = "<span class='cv-instruction'><BR>press TAB to cycle through poll divisions</span>";
             this._div.innerHTML = (
