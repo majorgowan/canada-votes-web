@@ -275,7 +275,9 @@ document.addEventListener("DOMContentLoaded", function() {
             } else if (props) {
                 pollString = "<h5>" + props.DistrictName + ' poll ' + props.Poll.trimStart() + "</h5>";
             }
-            var tabString = "<span class='cv-instruction'><BR>press TAB to cycle through poll divisions</span>";
+            var tabString = ("<span class='cv-instruction'>"
+                             + "<BR>press TAB to cycle through poll divisions<BR>"
+                             + "press ENTER to zoom in on selected poll division</span>");
             this._div.innerHTML = (
                 '<h4>Election ' + year + '</h4>'
                 + (props ? (pollString + candidatesString(props) + tabString)
@@ -474,6 +476,15 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         tabThrough(mouseInRiding, "up");
                     }
+                }
+            }
+            if (e.key === "Enter") {
+                if (mouseInRiding in pollLayers) {
+                    // zoom in to currently selected division
+                    e.preventDefault();
+                    map.fitBounds(pollLayers[mouseInRiding]
+                                  .getLayers()[selectedPoll[mouseInRiding]["selected"]]
+                                  .getBounds());
                 }
             }
         });
