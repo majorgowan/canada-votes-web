@@ -261,9 +261,27 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (party === leader) {
                         partyString = "<b>" + partyString + "</b>";
                     }
-                    return_string = (
-                        return_string + partyString + "<br>"
-                    );
+
+                    // if length of candidate list too long, omit those with 0 votes in poll
+                    if (Object.keys(props).length > 30) {
+                        if (advance) {
+                            if (props[party].eday + props[party].advance == 0) {
+                                return_string = return_string;
+                            } else {
+                                return_string = return_string + partyString + "<br>";
+                            }
+                        } else {
+                            if (props[party].eday == 0) {
+                                return_string = return_string;
+                            } else {
+                                return_string = return_string + partyString + "<br>";
+                            }
+                        }
+                    } else {
+                        return_string = (
+                            return_string + partyString + "<br>"
+                        );
+                    }
                 }
            }
            return return_string;
@@ -703,7 +721,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
-
 
    }
 
